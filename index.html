@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Sourav Khan — Portfolio</title>
+  <meta name="description" content="Portfolio of Sourav Khan — projects, internships, certifications, and contact." />
+  <meta name="theme-color" content="#0ea5e9" />
+
+  <style>
+    /* ---------- BASE + TOKENS ---------- */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    img{max-width:100%;display:block;height:auto}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    :root{
+      --bg:#0b1020;
+      --fg:#e6eefb;
+      --muted:#a9b6d3;
+      --accent:#60a5fa;
+      --accent-2:#22d3ee;
+      --ring:0 0 0 2px rgba(96,165,250,.35), 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --max:1200px;              /* laptop default */
+      --mx:clamp(16px, 5vw, 32px);
+      --headerH:64px;
+      --mxX:50%; --mxY:40%;      /* fluid background cursors */
+    }
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color: var(--fg);
+      line-height:1.6;
+      overflow-x:hidden;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+      background:#0a0f1f; /* fallback */
+    }
+
+    /* ---------- Fluid gradient background (follows mouse/touch) ---------- */
+    .fluid-bg{
+      position:fixed; inset:0; z-index:-2;
+      background:
+        radial-gradient(900px 900px at var(--mxX) var(--mxY),
+          rgba(170, 11, 184, 0.575), transparent 60%),
+        radial-gradient(700px 700px at calc(100% - var(--mxX)) calc(100% - var(--mxY)),
+              lab(38.19% 66.75 -89.5 / 0.479), transparent 60%),
+        radial-gradient(1000px 1000px at 20% 90%,
+          rgba(14, 18, 243, 0.18), transparent 60%),
+        linear-gradient(180deg, #0a0f1f 0%, #0b1228 100%);
+      filter:saturate(115%) blur(.2px);
+    }
+    .noise{
+      position:fixed; inset:-10%; z-index:-1; pointer-events:none;
+      background-image:url('data:image/svg+xml;utf8,\
+      <svg xmlns="http://www.w3.org/2000/svg" width=\"140\" height=\"140\" viewBox=\"0 0 140 140\">\
+        <filter id=\"n\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"2\"/></filter>\
+        <rect width=\"100%\" height=\"100%\" filter=\"url(%23n)\" opacity=\"0.035\"/>\
+      </svg>');
+      background-size:140px 140px; mix-blend-mode:overlay;
+    }
+
+    /* ---------- Layout ---------- */
+    .container{max-width:var(--max); margin:0 auto; padding:0 var(--mx);}
+    header{position:sticky; top:0; backdrop-filter:blur(10px); background:rgba(10,15,33,.55); border-bottom:1px solid rgba(255,255,255,.06); z-index:20}
+    nav{display:flex; align-items:center; justify-content:space-between; gap:10px; height:var(--headerH);}
+    .logo{font-weight:800; letter-spacing:.3px; white-space:nowrap}
+
+    /* Top-right social icons */
+    .top-social{display:flex; align-items:center; gap:10px}
+    .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:12px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12)
+    }
+    .icon-btn:hover{background:rgba(255,255,255,.1)}
+    .icon{width:20px;height:20px;display:inline-block}
+
+    /* Desktop links */
+    .navlinks{display:flex; align-items:center; gap:6px}
+    .navlinks a{padding:.55rem .8rem; border-radius:12px; color:var(--muted)}
+    .navlinks a:hover{color:var(--fg); background:rgba(255,255,255,.06)}
+
+    /* Mobile menu */
+    .menuBtn{
+      display:none; border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.06); color:var(--fg);
+      padding:.55rem .7rem; border-radius:12px;
+    }
+    .mobilePanel{
+      display:none; position:fixed; inset:var(--headerH) 0 auto 0; background:rgba(6,10,24,.95);
+      border-bottom:1px solid rgba(255,255,255,.08); padding:10px var(--mx) 16px; z-index:19;
+    }
+    .mobileLinks a{display:block; padding:.9rem 1rem; border-radius:12px; color:var(--fg); background:rgba(255,255,255,.05); margin:.35rem 0}
+
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:.9rem 1.05rem; border-radius:14px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#051225; font-weight:700; box-shadow:var(--ring); touch-action:manipulation}
+    .btn:hover{transform:translateY(-1px); transition:transform .15s ease-out}
+    .btn.ghost{background:rgba(255,255,255,.06); color:var(--fg); box-shadow:none; border:1px solid rgba(255,255,255,.12)}
+    .btn.ghost:hover{background:rgba(255,255,255,.1)}
+
+    section{padding:72px 0}
+    .hero{padding:108px 0 84px; display:grid; gap:22px; grid-template-columns:1.15fr .85fr; align-items:center}
+    .kicker{color:var(--muted); font-weight:600; letter-spacing:.2em; text-transform:uppercase; font-size:.8rem}
+    h1{font-size:clamp(2rem, 7vw, 3.4rem); line-height:1.1; margin:.2rem 0 .6rem}
+    .lead{font-size:clamp(1rem, 2.5vw, 1.15rem); color:#cdd8f6; max-width:60ch}
+    .hero-cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:10px}
+
+    .grid{display:grid; gap:18px}
+    .grid-3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.25);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .card:hover{transform:translateY(-3px); border-color: rgba(255,255,255,.16);}
+    .tag{display:inline-block; padding:.35rem .7rem; border-radius:999px; font-size:.82rem; color:#0b1020; background:rgba(255,255,255,.92); margin:.2rem .3rem .2rem 0}
+    .muted{color:var(--muted)}
+    .title{font-weight:800; margin:.1rem 0 .35rem; font-size:1.12rem}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+
+    /* Avatar (rectangle, larger, no circle) */
+    .avatar-wrap{display:flex; justify-content:center}
+    .avatar{
+      width:340px;           /* increased size */
+      height:auto;           /* natural aspect ratio */
+      border-radius:0;       /* no circle */
+      border:none;           /* remove border ring */
+      box-shadow:none;       /* remove shadow */
+      margin-inline:auto;
+      object-fit:cover;      /* safe if image is large */
+    }
+
+    /* Video wrapper */
+    .video-card iframe{width:100%; aspect-ratio:16/9; border:0; border-radius:14px}
+
+    footer{padding:48px 0 70px; color:var(--muted); border-top:1px solid rgba(255,255,255,.06)}
+
+    /* ---------- ULTRAWIDE / LARGE DESKTOP ---------- */
+    @media (min-width: 1600px){
+      :root{ --max:1400px; }
+      .hero{gap:28px}
+      h1{font-size:3.8rem}
+      .avatar{width: 800px;}  /* a bit larger on ultrawide */
+    }
+    @media (min-width: 2000px){
+      :root{ --max:1600px; }
+      .hero{gap:32px}
+      h1{font-size:4.2rem}
+      .avatar{width: 600px;}
+    }
+
+    /* ---------- TABLET/LAPTOP TUNING ---------- */
+    @media (max-width: 900px){
+      .hero{grid-template-columns:1fr}
+      section{padding:60px 0}
+      .avatar{width: 800px;}   /* still larger than old version */
+    }
+
+    /* ---------- MOBILE COMPACT MODE ---------- */
+    @media (max-width: 720px){
+      :root{--mx:clamp(12px, 4.5vw, 18px); --headerH:56px}
+      .navlinks{display:none}
+      .menuBtn{display:inline-flex; align-items:center; gap:8px}
+      .btn{padding:.7rem .9rem; border-radius:12px}
+      .card{padding:12px; border-radius:14px}
+      .title{font-size:1.02rem}
+      .kicker{font-size:.75rem}
+      h1{font-size:clamp(1.6rem, 8vw, 2.4rem)}
+      .lead{font-size:.98rem}
+      .grid{gap:12px}
+      .hero{padding:70px 0 52px}
+      .avatar{width: 400px;}   /* compact but rectangular */
+      .icon-btn{width:36px;height:36px; border-radius:10px}
+      .mobilePanel.open{display:block}
+    }
+
+    .safePad{padding-bottom:calc(env(safe-area-inset-bottom) + 18px)}
+  </style>
+</head>
+<body>
+  <!-- Fluid background layers -->
+  <div class="fluid-bg" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#home" class="logo">Sourav Khan</a>
+
+        <!-- Top-right social with logos (LinkedIn, GitHub, YouTube) -->
+        <div class="top-social">
+          <a class="icon-btn" href="https://www.linkedin.com/in/codrav/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0zM8 8h4.8v2.2h.07c.67-1.27 2.3-2.6 4.73-2.6C21.6 7.6 24 9.7 24 14v10h-5v-8.6c0-2.05-.04-4.69-2.86-4.69-2.86 0-3.3 2.23-3.3 4.53V24H8z"/></svg>
+          </a>
+          <a class="icon-btn" href="https://github.com/CodRav" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.8 1.3 3.48.99.11-.79.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.56.12-3.24 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.8c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.93.12 3.24.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.63-5.47 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5z"/></svg>
+          </a>
+          <a class="icon-btn" href="https://www.youtube.com/@codrav56" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.3 3.5 12 3.5 12 3.5s-7.3 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c2.1.6 9.4.6 9.4.6s7.3 0 9.4-.6a3 3 0 0 0 2.1-2.1c.4-1.9.5-3.8.5-5.8s0-3.9-.5-5.8zM9.6 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
+          </a>
+        </div>
+
+        <div class="navlinks" aria-label="Primary">
+          <a href="#projects">Projects</a>
+          <a href="#internships">Internships</a>
+          <a href="#certifications">Certifications</a>
+          <a href="#education">Education</a>
+          <a href="#skills">Skills</a>
+          <a href="#contact" class="btn">Contact</a>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button class="menuBtn" id="menuBtn" aria-controls="mobilePanel" aria-expanded="false" aria-label="Open menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Menu
+        </button>
+      </nav>
+    </div>
+
+    <!-- Mobile panel -->
+    <div id="mobilePanel" class="mobilePanel">
+      <div class="container mobileLinks safePad">
+        <a href="#projects">Projects</a>
+        <a href="#internships">Internships</a>
+        <a href="#certifications">Certifications</a>
+        <a href="#education">Education</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact" class="btn" style="display:block; text-align:center; margin-top:6px">Contact</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main id="home" class="container">
+    <section class="hero">
+      <!-- LEFT: intro -->
+      <div>
+        <div class="kicker">Portfolio</div>
+        <h1>Hi, I’m <span style="background:linear-gradient(90deg,#60a5fa,#22d3ee); -webkit-background-clip:text; background-clip:text; color:transparent;">Sourav Khan</span>.</h1>
+        <p class="lead">
+          A passionate and detail‑oriented <strong>Computer Science Engineering</strong> student with strong foundations in software development
+          and growing expertise in <strong>Artificial Intelligence</strong>. Eager to build AI‑driven solutions, automation, and secure cloud systems.
+        </p>
+        <p class="muted" style="margin-top:10px">
+          📍 Netajipally, Noapara, Barasat, North 24 Parganas, Kolkata – 700125, India<br/>
+          ✉️ <a href="mailto:souravkhan712@gmail.com" style="text-decoration:underline">souravkhan712@gmail.com</a>
+        </p>
+        <div class="hero-cta" style="margin-top:12px">
+          <a class="btn" href="#projects">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M13 5l7 7-7 7M5 12h14"/></svg>
+            View Projects
+          </a>
+          <a class="btn ghost" href="https://drive.google.com/file/d/1bOST5vsquNI0mTgUvDQg65ABve-ZV_69/view?usp=drive_link" target="_blank" rel="noopener">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            Download CV
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT: avatar (desktop right, mobile below email) -->
+      <div class="avatar-wrap">
+        <img class="avatar" src="1.png" alt="Sourav Khan portrait"/>
+      </div>
+    </section>
+
+    <!-- Projects (each has GitHub link) -->
+    <section id="projects">
+      <h2 style="font-size:1.8rem; margin:0 0 16px">Projects</h2>
+      <p class="muted" style="margin-top:-8px">A selection of my work. Each card links to GitHub.</p>
+
+      <div class="grid grid-3" style="margin-top:16px">
+        <article class="card">
+          <div class="title">AI‑Powered Centralised Medical Records</div>
+          <p class="muted">Diagnosis review + predictive healthcare analytics with AI summaries and risk insights.</p>
+          <div class="row"><span class="tag">AI</span><span class="tag">NLP</span><span class="tag">RAG</span></div>
+          <div class="row" style="margin-top:10px">
+            <a class="btn" href="https://github.com/CodRav" target="_blank" rel="noopener">
+              <!-- GitHub icon -->
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.8 1.3 3.48.99.11-.79.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.56.12-3.24 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.8c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.93.12 3.24.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.63-5.47 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="title">Smart Home Automation (ESP‑32 IoT)</div>
+          <p class="muted">Voice assistant–controlled automation for household appliances over Wi‑Fi.</p>
+          <div class="row"><span class="tag">ESP32</span><span class="tag">IoT</span><span class="tag">Wi‑Fi</span></div>
+          <div class="row" style="margin-top:10px">
+            <a class="btn" href="https://github.com/CodRav" target="_blank" rel="noopener">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.8 1.3 3.48.99.11-.79.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.56.12-3.24 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.8c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.93.12 3.24.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.63-5.47 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="title">AI‑Controlled Water Valve Regulation</div>
+          <p class="muted">Intelligent irrigation using soil‑moisture monitoring and AI‑assisted control.</p>
+          <div class="row"><span class="tag">AI</span><span class="tag">Embedded</span><span class="tag">Sensors</span></div>
+          <div class="row" style="margin-top:10px">
+            <a class="btn" href="https://github.com/CodRav" target="_blank" rel="noopener">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.8 1.3 3.48.99.11-.79.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.56.12-3.24 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.8c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.93.12 3.24.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.63-5.47 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="title">Quadcopter Drone</div>
+          <p class="muted">Designed and tested a stable quadcopter build.</p>
+          <div class="row"><span class="tag">Drone</span><span class="tag">Control</span><span class="tag">Hardware</span></div>
+          <div class="row" style="margin-top:10px">
+            <a class="btn" href="https://github.com/CodRav" target="_blank" rel="noopener">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.8 1.3 3.48.99.11-.79.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.56.12-3.24 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.8c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.93.12 3.24.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.63-5.47 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="title">Voice‑Controlled Curtain System</div>
+          <p class="muted">Hands‑free curtain automation through voice commands.</p>
+          <div class="row"><span class="tag">IoT</span><span class="tag">Voice</span><span class="tag">Home‑Auto</span></div>
+          <div class="row" style="margin-top:10px">
+            <a class="btn" href="https://github.com/CodRav" target="_blank" rel="noopener">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.8 1.3 3.48.99.11-.79.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.56.12-3.24 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.8c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.93.12 3.24.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.63-5.47 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Internships (credential links; no images) -->
+    <section id="internships">
+      <h2 style="font-size:1.8rem; margin:0 0 16px">Internships</h2>
+      <div class="grid grid-2" style="margin-top:16px">
+        <div class="card">
+          <div class="title">Cloud Security Intern — Training and Learning Bureau (AICTE)</div>
+          <p class="muted"><strong>Sep 2023 – Nov 2023</strong> (3 months)</p>
+          <ul class="muted" style="margin:6px 0 10px 18px">
+            <li>Developed expertise in Zero Trust Cloud Security and ethical hacking.</li>
+            <li>Applied Zero‑Trust to secure cloud infrastructures.</li>
+            <li>Built defence against modern cyber threats.</li>
+          </ul>
+          <div class="row">
+            <a class="btn" href="https://drive.google.com/file/d/1_Hkm5omPkO46Gt8VmsT7kQh5ZNwn9Wow/view?usp=sharing" target="_blank" rel="noopener">Credential</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title">Robotic Process Automation Intern — Training and Learning Bureau (AICTE)</div>
+          <p class="muted"><strong>May 2023 – Jul 2023</strong> (3 months)</p>
+          <ul class="muted" style="margin:6px 0 10px 18px">
+            <li>Designed and implemented end‑to‑end RPA workflows.</li>
+            <li>Integrated automations with existing systems.</li>
+            <li>Troubleshot and maintained RPA bots.</li>
+          </ul>
+          <div class="row">
+            <a class="btn" href="https://drive.google.com/file/d/15HHg4x7cqlxog6OQfNBzNw4BFKBqSPOe/view?usp=sharing" target="_blank" rel="noopener">Credential</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Certifications (Credential + View buttons; no images) -->
+    <section id="certifications">
+      <h2 style="font-size:1.8rem; margin:0 0 16px">Certifications</h2>
+      <div class="grid grid-2" style="margin-top:16px">
+        <div class="card">
+          <div class="title">Oracle Certified Generative AI Professional</div>
+          <p class="muted">Oracle — <strong>Aug 2025</strong></p>
+          <div class="row">
+            <a class="btn" href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=3A1932C99912EDDB1CA29A3670DC17B5347C2F6E10766788E3E2242601A94F22" target="_blank" rel="noopener">Credential</a>
+            <a class="btn ghost" href="https://drive.google.com/file/d/1jTEU2w0UiEKDfSii45nYoWf1-Y8_bRdg/view?usp=drive_link" target="_blank" rel="noopener">View</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title">Oracle Data Science Professional 2025</div>
+          <p class="muted">Oracle — <strong>Aug 2025</strong></p>
+          <div class="row">
+            <a class="btn" href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=E9C92E5887CA0A27C890C37B85A58740BE4EA30D83AE4BCBF28C796D159CAAD6" target="_blank" rel="noopener">Credential</a>
+            <a class="btn ghost" href="https://drive.google.com/file/d/10FCKLgGLt_ZB0kkmAPVx5-gNd5UWpKrf/view?usp=sharing" target="_blank" rel="noopener">View</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title">Oracle 2025 Certified AI Foundations Associate</div>
+          <p class="muted">Oracle — <strong>Aug 2025</strong> (valid till Aug 2027)</p>
+          <div class="row">
+            <a class="btn" href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=00526FC3EC1AEDF587D920089EB3F3E3127E9A6C953728935A1CCD6DCA24F20D" target="_blank" rel="noopener">Credential</a>
+            <a class="btn ghost" href="https://drive.google.com/file/d/1dP3fdKFS0_foL2BrT0NrS88aigTED-WG/view?usp=drive_link" target="_blank" rel="noopener">View</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title">Google Cloud Career Practitioners Pathway (GCCP)</div>
+          <p class="muted">Google — <strong>Dec 2023</strong></p>
+          <div class="row">
+            <a class="btn" href="https://developers.google.com/profile/badges/community/gdsc/2023/core-member" target="_blank" rel="noopener">Credential</a>
+            <a class="btn ghost" href="https://drive.google.com/file/d/1N_1_BQLzMgXu70-vDwNdHgMrqGPE92gF/view?usp=sharing" target="_blank" rel="noopener">View</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section id="education">
+      <h2 style="font-size:1.8rem; margin:0 0 16px">Education</h2>
+      <div class="grid grid-2" style="margin-top:16px">
+        <div class="card">
+          <div class="title">B.Tech in Computer Science Engineering</div>
+          <p class="muted">Techno India University, Kolkata, West Bengal — Admission: <strong>2022</strong> | Expected Graduation: <strong>2026</strong></p>
+        </div>
+        <div class="card">
+          <div class="title">Higher Secondary (Class 12)</div>
+          <p class="muted">Purba Barasat School — <strong>2022</strong> • Secured <strong>81%</strong></p>
+        </div>
+        <div class="card">
+          <div class="title">Secondary (Class 10)</div>
+          <p class="muted">Ramkrishna Vivekananda Mission School — <strong>2020</strong> • Secured <strong>82%</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills">
+      <h2 style="font-size:1.8rem; margin:0 0 16px">Technical Skills</h2>
+      <div class="card">
+        <div class="row">
+          <span class="tag">C</span><span class="tag">C++</span><span class="tag">Python</span>
+          <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span><span class="tag">PHP</span>
+          <span class="tag">Cloud Security</span><span class="tag">AI‑Automation</span><span class="tag">Ethical Hacking</span><span class="tag">IoT</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Video (after skills) -->
+    <section id="video">
+      <h2 style="font-size:1.8rem; margin:0 0 16px">Featured Video</h2>
+      <div class="card video-card">
+        <div class="title">What Is Programming? || Why So Many Coding Languages are Created?</div>
+        <p class="muted" style="margin-top:4px">Watch on YouTube — it plays when you press play.</p>
+        <iframe
+          loading="lazy"
+          src="https://www.youtube.com/embed/LBSZJ1TtLLQ"
+          title="What Is Programming? || Why So Many Coding Languages are Created?"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <!-- Contact + Professional Links (logos only; no Display Picture link) -->
+    <section id="contact">
+      <h2 style="font-size:1.8rem; margin:0 0 16px">Contact</h2>
+      <div class="grid grid-2" style="margin-top:16px">
+        <div class="card">
+          <div class="title">Let’s work together</div>
+          <p class="muted">Have an opportunity or idea? Send me a message.</p>
+          <form action="mailto:souravkhan712@gmail.com" method="post" enctype="text/plain">
+            <div class="row" style="gap:12px">
+              <input required name="Name" placeholder="Your name" style="flex:1; padding:1rem; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--fg)"/>
+              <input required type="email" name="Email" placeholder="Your email" style="flex:1; padding:1rem; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--fg)"/>
+            </div>
+            <textarea required name="Message" rows="5" placeholder="Your message" style="margin-top:12px; width:100%; padding:1rem; border-radius:14px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--fg)"></textarea>
+            <button class="btn" type="submit" style="margin-top:12px">Send</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="title">Professional Links</div>
+          <div class="row" style="gap:10px">
+            <!-- Logo-only buttons with aria-labels -->
+            <a class="icon-btn" href="https://drive.google.com/file/d/1bOST5vsquNI0mTgUvDQg65ABve-ZV_69/view?usp=drive_link" target="_blank" rel="noopener" aria-label="CV">
+              <!-- doc icon -->
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            </a>
+            <a class="icon-btn" href="https://www.linkedin.com/in/codrav/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0zM8 8h4.8v2.2h.07c.67-1.27 2.3-2.6 4.73-2.6C21.6 7.6 24 9.7 24 14v10h-5v-8.6c0-2.05-.04-4.69-2.86-4.69-2.86 0-3.3 2.23-3.3 4.53V24H8z"/></svg>
+            </a>
+            <a class="icon-btn" href="https://github.com/CodRav" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.8 1.3 3.48.99.11-.79.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.56.12-3.24 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.8c1.02.01 2.05.14 3.01.41 2.29-1.55 3.3-1.23 3.3-1.23.66 1.68.24 2.93.12 3.24.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.63-5.47 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5z"/></svg>
+            </a>
+            <a class="icon-btn" href="https://www.youtube.com/@codrav56" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.3 3.5 12 3.5 12 3.5s-7.3 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c2.1.6 9.4.6 9.4.6s7.3 0 9.4-.6a3 3 0 0 0 2.1-2.1c.4-1.9.5-3.8.5-5.8s0-3.9-.5-5.8zM9.6 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
+            </a>
+            <a class="icon-btn" href="https://www.facebook.com/perfumeness.sourav" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.2V12h2.2V9.8c0-2.2 1.3-3.4 3.3-3.4.96 0 1.96.17 1.96.17v2.2h-1.1c-1.1 0-1.4.68-1.4 1.37V12h2.4l-.38 2.9h-2.02v7A10 10 0 0 0 22 12z"/></svg>
+            </a>
+            <a class="icon-btn" href="https://www.instagram.com/codrav_143/" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.8.07 1.2.06 1.9.25 2.4.42.6.23 1.1.5 1.6.96.46.45.73 1 .96 1.6.17.5.36 1.2.42 2.4.07 1.2.07 1.6.07 4.8s0 3.6-.07 4.8c-.06 1.2-.25 1.9-.42 2.4a4.1 4.1 0 0 1-.96 1.6 4.1 4.1 0 0 1-1.6.96c-.5.17-1.2.36-2.4.42-1.2.07-1.6.07-4.8.07s-3.6 0-4.8-.07c-1.2-.06-1.9-.25-2.4-.42a4.1 4.1 0 0 1-1.6-.96 4.1 4.1 0 0 1-.96-1.6c-.17-.5-.36-1.2-.42-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.8c.06-1.2.25-1.9.42-2.4.23-.6.5-1.1.96-1.6.45-.46 1-.73 1.6-.96.5-.17 1.2-.36 2.4-.42C8.4 2.2 8.8 2.2 12 2.2zM12 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zm7-1.1a1.45 1.45 0 1 0 0 2.9 1.45 1.45 0 0 0 0-2.9zM12 8.2A3.8 3.8 0 1 1 8.2 12 3.8 3.8 0 0 1 12 8.2z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="row" style="justify-content:space-between">
+        <div>© <span id="yr"></span> Sourav Khan. All rights reserved.</div>
+        <div class="muted"> — last updated <span id="updated"></span></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Footer dates
+    document.getElementById('yr').textContent = new Date().getFullYear();
+    document.getElementById('updated').textContent = new Date().toLocaleDateString();
+
+    // Smooth scroll for internal links
+    const menuBtn = document.getElementById('menuBtn');
+    const panel = document.getElementById('mobilePanel');
+    const closeMobile = () => { panel.classList.remove('open'); if(menuBtn) menuBtn.setAttribute('aria-expanded','false'); };
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id = a.getAttribute('href');
+        if(id.length>1){
+          e.preventDefault();
+          const el = document.querySelector(id);
+          if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+          closeMobile();
+        }
+      });
+    });
+
+    // Mobile menu logic
+    const openMobile = () => { panel.classList.add('open'); menuBtn.setAttribute('aria-expanded','true'); };
+    if(menuBtn){
+      menuBtn.addEventListener('click', () => panel.classList.contains('open') ? closeMobile() : openMobile());
+      window.addEventListener('resize', () => { if(window.innerWidth>720) closeMobile(); });
+    }
+
+    // ---------- Fluid background mouse/touch tracker ----------
+    const root = document.documentElement;
+    function setFluidFrom(x, y){
+      const w = window.innerWidth, h = window.innerHeight;
+      root.style.setProperty('--mxX', (x / w * 100).toFixed(2) + '%');
+      root.style.setProperty('--mxY', (y / h * 100).toFixed(2) + '%');
+    }
+    window.addEventListener('mousemove', e => setFluidFrom(e.clientX, e.clientY), {passive:true});
+    window.addEventListener('touchmove', e => {
+      const t = e.touches && e.touches[0];
+      if(t) setFluidFrom(t.clientX, t.clientY);
+    }, {passive:true});
+    setFluidFrom(window.innerWidth*0.5, window.innerHeight*0.4);
+  </script>
+</body>
+</html>
